@@ -27,11 +27,12 @@ tol = 0.0
 
 # Aparência 
 ctk.set_appearance_mode('dark')
+ctk.set_default_color_theme('dark-blue')
 
 # Janela Principal
 app = ctk.CTk()
 app.title('Calculadora de Cores de Resistores')
-app.geometry('900x380')
+app.geometry('1020x300')
 
 # Funções
 
@@ -58,7 +59,18 @@ def tolerancia(choice):
 
 def resposta():
     num = (faixa1*10+faixa2)*mult
-    resultado.configure(text= f"Resistor {num:.0f} com {tol}%")
+    unidade = "Ω"
+    if(num>=1_000_000_000):
+        num=num/1_000_000_000
+        unidade="GΩ"
+    elif(num>=1_000_000):
+        num=num/1_000_000
+        unidade="MΩ"
+    elif(num>=1_000):
+        num=num/1_000
+        unidade="KΩ"
+
+    resultado.configure(text= f"Resistor {num}{unidade} com {tol}%")
 
 
 # Campos
@@ -68,35 +80,42 @@ faixas_valores = list(VALORES_FAIXAS.keys())
 faixas_mult = list(MULTIPLICADORES.keys())
 faixas_tol = list(TOLERANCIAS.keys())
 
-faixaUm = ctk.CTkLabel(app, text='Faixa 1')
-faixaUm.grid(row=0, column=0, padx=20, pady=20)
+#Fonte
+fonteTitulo = ctk.CTkFont(family="Arial", size=16)
+fonteResposta = ctk.CTkFont(family="Arial", size=14)
 
-faixaDois = ctk.CTkLabel(app, text='Faixa 2')
-faixaDois.grid(row=0, column=1, padx=20, pady=20)
+frame = ctk.CTkFrame(master=app, corner_radius=15, border_width=2, border_color="#3399ff", fg_color="#292436")
+frame.pack(pady=10, padx=10, fill="both", expand=True)
 
-faixaTres = ctk.CTkLabel(app, text='Faixa 3')
-faixaTres.grid(row=0, column=2, padx=20, pady=20)
+faixaUm = ctk.CTkLabel(frame, text='Faixa 1', font=fonteTitulo)
+faixaUm.grid(row=0, column=0, padx=30, pady=30)
 
-faixaQuatro = ctk.CTkLabel(app, text='Faixa 4')
-faixaQuatro.grid(row=0, column=3, padx=20, pady=20)
+faixaDois = ctk.CTkLabel(frame, text='Faixa 2', font=fonteTitulo)
+faixaDois.grid(row=0, column=1, padx=30, pady=30)
 
-opcaoUm = ctk.CTkComboBox(master=app, values=faixas_valores, command=opcaoSelecionadaUm)
-opcaoUm.grid(row=1, column=0, padx=20, pady=20)
+faixaTres = ctk.CTkLabel(frame, text='Faixa 3', font=fonteTitulo)
+faixaTres.grid(row=0, column=2, padx=30, pady=30)
 
-opcaoDois = ctk.CTkComboBox(master=app, values=faixas_valores, command=opcaoSelecionadaDois)
-opcaoDois.grid(row=1, column=1, padx=20, pady=20)
+faixaQuatro = ctk.CTkLabel(frame, text='Faixa 4', font=fonteTitulo)
+faixaQuatro.grid(row=0, column=3, padx=30, pady=30)
 
-opcaoTres = ctk.CTkComboBox(master=app, values=faixas_mult, command=multiplicador)
-opcaoTres.grid(row=1, column=2, padx=20, pady=20)
+opcaoUm = ctk.CTkComboBox(master=frame, values=faixas_valores, command=opcaoSelecionadaUm)
+opcaoUm.grid(row=1, column=0, padx=30)
 
-opcaoQuatro = ctk.CTkComboBox(master=app, values=faixas_tol, command=tolerancia)
-opcaoQuatro.grid(row=1, column=3, padx=20, pady=20)
+opcaoDois = ctk.CTkComboBox(master=frame, values=faixas_valores, command=opcaoSelecionadaDois)
+opcaoDois.grid(row=1, column=1, padx=30)
 
-botao = ctk.CTkButton(app, text='Calcular', command=resposta)
-botao.grid(row=1, column=4, padx=20, pady=20)
+opcaoTres = ctk.CTkComboBox(master=frame, values=faixas_mult, command=multiplicador)
+opcaoTres.grid(row=1, column=2, padx=30)
 
-resultado = ctk.CTkLabel(app, text=" ")
-resultado.grid(row=2, column=0, padx=20, pady=20)
+opcaoQuatro = ctk.CTkComboBox(master=frame, values=faixas_tol, command=tolerancia)
+opcaoQuatro.grid(row=1, column=3, padx=30)
+
+botao = ctk.CTkButton(frame, text='Calcular', command=resposta, hover_color="#014588",)
+botao.grid(row=1, column=4, padx=30)
+
+resultado = ctk.CTkLabel(frame, text=" ", font=fonteResposta)
+resultado.grid(row=2, column=2, padx=20, pady=40)
 
 # Inicialização
 app.mainloop()
